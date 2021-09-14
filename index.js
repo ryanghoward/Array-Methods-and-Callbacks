@@ -47,13 +47,13 @@ Use the higher-order function called getYears to do the following:
 3. Return an array called years containing all of the years in the getFinals data set*/
 
 function getYears(array, callBackFunction) {
-    let finalYears = [];
-    array.forEach(function(item){
-        finalYears.push(item.Year);
+    let finalYears = callBackFunction(array).map(function(item){
+        return item.Year;
     });
     return finalYears;
 }
-console.log(getYears(fifaData));
+
+console.log(getYears(fifaData, getFinals));
 
 
 /* 🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀 Task 4: 🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀
@@ -65,14 +65,10 @@ Use the higher-order function getWinners to do the following:
 
 //Don't worry about overtime - compare home team goals and away team goals
 function getWinners(array, getFinals_CB){
-    let winners = [];
-    array.filter(function(item){
-        if(item['Home Team Goals'] > item['Away Team Goals']){
-            winners.push(item['Home Team Name']);
-        }else{
-            winners.push(item['Away Team Name']);
-        }
-    });
+   const winners = getFinals(array).map(function(item){
+       return item['Home Team Goals'] > item['Away Team Goals'] ?
+       item['Home Team Name'] : item['Away Team Name']
+   });
     return winners;
 }
 
@@ -89,13 +85,12 @@ hint: the strings returned need to exactly match the string in step 4.
  Use map with item to grab year and index to grab winner*/
 
 function getWinnersByYear(array, getYears_CB, getWinners_CB){
-    let newArray = [];
-    const yearsAndWinners = getWinners_CB(array, getFinals);
-    const years = getYears_CB(array, getFinals);
-    yearsAndWinners.map(function(item, index){
-        return newArray.push(`In ${years[index]}, ${item} won the world cup!`);
+    const champ = getWinners_CB(array, getFinals);
+    const year = getYears_CB(array, getFinals);
+    const yearChamp = champ.map(function(item, index){
+        return `In ${year[index]}, ${item} won the world cup!`;
     });
-    return newArray;
+    return yearChamp;
 } 
 
 console.log(getWinnersByYear(fifaData, getYears, getWinners));
